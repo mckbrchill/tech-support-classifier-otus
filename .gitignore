@@ -1,6 +1,6 @@
 .env
 poetry.lock
-
+.python-version
 
 notebooks/artifacts/
 notebooks/full_optimized.py
@@ -9,3 +9,4 @@ scripts/py_pipeline/__pycache__/
 scripts/spark_pipeline/__pycache__/
 
 scripts/spark_pipeline
+scripts/Untitled.ipynb

@@ -6,7 +6,7 @@ authors = ["Aleksei Pekhterev <lexpekhterev@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.14"
+python = "3.10.11"
 spacy = "^3.7.5"
 nltk = "^3.9.1"
 textblob = "^0.18.0.post0"
@@ -27,7 +27,7 @@ prometheus-client = "^0.21.0"
 pyarrow = "^17.0.0"
 fastapi = "^0.115.0"
 uvicorn = "^0.31.0"
-pyspark = "3.0.2"
+pyspark = "3.4.3"
 scikit-learn = "^1.5.2"
 matplotlib = "^3.9.2"
 ipykernel = "^6.29.5"

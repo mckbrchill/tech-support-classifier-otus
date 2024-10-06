@@ -1,7 +1,7 @@
 import os
 import json
 import joblib
-from io import StringIO
+from io import StringIO, BytesIO
 import tempfile
 
 import boto3
@@ -126,3 +126,9 @@ class s3Loader:
         csv_buffer = StringIO()
         df.to_csv(csv_buffer)
         self.s3.put_object(Bucket=bucket_name, Key=file_name, Body=csv_buffer.getvalue())
+    
+    def save_df_to_parquet_s3(self, df, bucket_name, file_name):
+        parquet_buffer = BytesIO()
+        df.to_parquet(parquet_buffer, engine='pyarrow')
+        parquet_buffer.seek(0)  # Reset buffer position to the beginning
+        self.s3.put_object(Bucket=bucket_name, Key=file_name, Body=parquet_buffer.getvalue())

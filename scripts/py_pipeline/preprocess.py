@@ -9,8 +9,9 @@ from s3client import s3Loader
 import nltk
 
 # Load necessary NLTK data
+nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('averaged_perceptron_tagger')
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # Load environment variables
 load_dotenv()
@@ -65,5 +66,5 @@ if __name__ == "__main__":
     df = preprocess_complaints(data)
 
     p, _ = os.path.splitext(object_key)
-    new_object_key = f"preprocessed/{p}.csv"
-    s3_client.save_df_to_s3(df, clean_bucket_name, new_object_key)
+    new_object_key = f"preprocessed_py/{p}.parquet"
+    s3_client.save_df_to_parquet_s3(df, clean_bucket_name, new_object_key)

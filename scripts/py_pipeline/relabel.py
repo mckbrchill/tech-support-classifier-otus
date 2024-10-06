@@ -35,7 +35,7 @@ def assign_topics(nmf_model, dtm):
 def save_results_to_s3(s3_client, df, bucket_name, object_key, models=None):
     """Save the results and models to S3."""
     p, _ = os.path.splitext(object_key)
-    new_object_key = f"preprocessed_labeled/{p.split('/')[1]}.csv"
+    new_object_key = f"preprocessed_labeled_py/{p.split('/')[1]}.csv"
     s3_client.save_df_to_s3(df, bucket_name, new_object_key)
     
     if models:
@@ -45,7 +45,7 @@ def save_results_to_s3(s3_client, df, bucket_name, object_key, models=None):
 if __name__ == "__main__":
     s3_client = s3Loader()
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
-    object_key = 'preprocessed/complaints-2021-05-14_08_16_.csv'
+    object_key = 'preprocessed_py/complaints-2021-05-14_08_16_.csv'
 
     data = s3_client.load_csv_from_s3(object_key=object_key, bucket_name=clean_bucket_name)
     df = pd.read_csv(io.BytesIO(data))
