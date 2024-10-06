@@ -1,3 +1,4 @@
+from config import Config
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import Tokenizer, StopWordsRemover, CountVectorizer, IDF
@@ -39,10 +40,18 @@ def train_and_evaluate_model(train_df, test_df, feature_col, label_col):
 
 def save_model_to_s3(model, bucket_name, model_name):
     """Save the model to an S3 bucket."""
-    model.write().overwrite().save(f"s3a://{bucket_name}/models/{model_name}_model")
+    model.write().overwrite().save(f"s3a://{bucket_name}/models_local/{model_name}_model")
 
 if __name__ == "__main__":
-    spark = SparkSession.builder.appName("TextClassification").getOrCreate()
+    config = Config()
+    conf = (
+        SparkConf().setMaster(config.master).setAppName("Relabel Topics")
+        .set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+	    .set("spark.hadoop.fs.s3a.access.key", config.aws_access_key_id) \
+	    .set("spark.hadoop.fs.s3a.secret.key", config.aws_secret_access_key) \
+	    .set("spark.hadoop.fs.s3a.endpoint", config.aws_endpoint_url)
+    )
+    spark = SparkSession.builder.config(conf=conf).getOrCreate()
     
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
     object_key = 'preprocessed_labeled/complaints-2021-05-14_08_16_.parquet'

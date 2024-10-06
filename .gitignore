@@ -9,3 +9,6 @@ scripts/py_pipeline/__pycache__/
 scripts/spark_pipeline/__pycache__/
 
 scripts/Untitled.ipynb
+
+scripts/spark_pipeline/train_ab_mlflow.py
+scripts/spark_pipeline/inference.py

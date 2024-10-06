@@ -1,8 +1,9 @@
-from pathlib import Path
 import os
+from dotenv import load_dotenv
+# from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType, TimestampType
 
-from pyspark.sql.types import StructType, StructField, IntegerType, DoubleType, TimestampType
 
+load_dotenv()
 
 class Config:
     """Config for application."""
@@ -26,9 +27,11 @@ class Config:
     # ]
     # vector_assembler_output_col: str = 'features'
 
-    s3_bucket: str = "otus-task-n3"
-    aws_access_key_id = ""
-    aws_secret_access_key = ""
+    s3_clean_bucket: str = os.environ.get("S3_CLEAN_BUCKET_NAME")
+    s3_raw_bucket: str = os.environ.get("S3_RAW_BUCKET_NAME")
+    aws_access_key_id = os.environ.get("S3_ID")
+    aws_secret_access_key = os.environ.get("S3_SECRET")
+    aws_endpoint_url = os.environ.get("S3_ENDPOINT_URL")
     # run_id: str = "73decc58d8b642b4a7cc70bb3dfaf6f9"
     master: str = "local[*]"
     app_name: str = "ModelInference"

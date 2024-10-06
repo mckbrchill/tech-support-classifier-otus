@@ -21,7 +21,6 @@ os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt_tab')
-
 os.system('python -m textblob.download_corpora')
 
 # Load environment variables
@@ -85,7 +84,6 @@ def preprocess_complaints(df):
     lemmatize_udf = udf(lemmatize_text, StringType())
     pos_tags_udf = udf(get_pos_tags, StringType())
 
-    # df = df.withColumn('complaint_what_happened', col('complaint_what_happened').cast(StringType()))
     df = df.na.drop(subset=['complaint_what_happened'])
     
     df = df.withColumn('complaint_cleaned', clean_udf(col('complaint_what_happened')))
@@ -106,16 +104,9 @@ if __name__ == "__main__":
     conf = (
         SparkConf().setMaster(config.master).setAppName(config.app_name)
         .set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-	    .set("spark.hadoop.fs.s3a.access.key", os.environ.get("S3_ID")) \
-	    .set("spark.hadoop.fs.s3a.secret.key", os.environ.get("S3_SECRET")) \
-	    .set("spark.hadoop.fs.s3a.endpoint", os.environ.get("S3_ENDPOINT_URL")) \
-        # .set("spark.hadoop.fs.s3a.path.style.access", "true") 
-        # .set("spark.hadoop.fs.s3a.connection.ssl.enabled", "true") 
-        # .set("spark.network.timeout", "3601s") 
-        # .set("spark.executor.heartbeatInterval", "3600s")
-        # .set("spark.executor.memory", "2g")
-        # .set("spark.driver.memory", "4g")
-        # .set("spark.sql.execution.arrow.pyspark.enabled", "true")
+	    .set("spark.hadoop.fs.s3a.access.key", config.aws_access_key_id) \
+	    .set("spark.hadoop.fs.s3a.secret.key", config.aws_secret_access_key) \
+	    .set("spark.hadoop.fs.s3a.endpoint", config.aws_endpoint_url) \
         .set('spark.default.parallelism', 1) \
         .set('spark.sql.shuffle.partitions', 1) \
         .set("spark.sql.parquet.int96RebaseModeInWrite", "CORRECTED")

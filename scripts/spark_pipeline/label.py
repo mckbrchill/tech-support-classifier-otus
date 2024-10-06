@@ -7,6 +7,7 @@ from pyspark.sql.types import IntegerType
 import os
 from dotenv import load_dotenv
 import numpy as np
+from config import Config
 
 load_dotenv()
 
@@ -43,7 +44,15 @@ def save_results_to_s3(df, bucket_name, object_key):
     df.coalesce(1).write.parquet(f"s3a://{bucket_name}/{new_object_key}", mode="overwrite")
 
 if __name__ == "__main__":
-    spark = SparkSession.builder.appName("TopicModeling").getOrCreate()
+    config = Config()
+    conf = (
+        SparkConf().setMaster(config.master).setAppName("Label Topics")
+        .set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+	    .set("spark.hadoop.fs.s3a.access.key", config.aws_access_key_id) \
+	    .set("spark.hadoop.fs.s3a.secret.key", config.aws_secret_access_key) \
+	    .set("spark.hadoop.fs.s3a.endpoint", config.aws_endpoint_url)
+    )
+    spark = SparkSession.builder.config(conf).getOrCreate()
     
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
     object_key = 'preprocessed/complaints-2021-05-14_08_16_.parquet'
