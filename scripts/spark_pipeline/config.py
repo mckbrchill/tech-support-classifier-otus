@@ -32,6 +32,8 @@ class Config:
     aws_access_key_id = os.environ.get("S3_ID")
     aws_secret_access_key = os.environ.get("S3_SECRET")
     aws_endpoint_url = os.environ.get("S3_ENDPOINT_URL")
-    # run_id: str = "73decc58d8b642b4a7cc70bb3dfaf6f9"
     master: str = "local[*]"
     app_name: str = "ModelInference"
+
+    mlflow_server_host = "89.169.131.68"
+    # run_id: str = "73decc58d8b642b4a7cc70bb3dfaf6f9"
