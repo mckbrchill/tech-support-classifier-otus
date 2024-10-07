@@ -7,7 +7,7 @@ from pyspark.sql.types import StringType
 import spacy
 from textblob import TextBlob
 from dotenv import load_dotenv
-from config import Config
+from src.config import Config
 import nltk
 import sys
 
