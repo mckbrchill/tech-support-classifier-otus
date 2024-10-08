@@ -18,7 +18,7 @@ class Config:
     master: str = "local[*]"
     app_name: str = "ModelInference"
 
-    mlflow_server_host = "89.169.131.68"
+    mlflow_server_host = "89.169.128.23"
     # run_id: str = "73decc58d8b642b4a7cc70bb3dfaf6f9"
 
     topic_mapping: dict = { 0:"Bank account services",

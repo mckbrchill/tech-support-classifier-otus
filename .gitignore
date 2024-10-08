@@ -8,6 +8,7 @@ notebooks/full_optimized.py
 
 scripts/py_pipeline/__pycache__/
 scripts/spark_pipeline/__pycache__/
+scripts/spark_debug
 src/__pycache__/
 spark_jars
 
