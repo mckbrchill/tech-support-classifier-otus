@@ -7,7 +7,7 @@ from pyspark.sql.types import IntegerType
 import os
 from dotenv import load_dotenv
 import numpy as np
-from config import Config
+from src.config import Config
 
 load_dotenv()
 

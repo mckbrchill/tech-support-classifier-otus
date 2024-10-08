@@ -1,4 +1,4 @@
-from config import Config
+from src.config import Config
 from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import Tokenizer, StopWordsRemover, CountVectorizer, IDF
