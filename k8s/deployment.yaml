@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predtopic-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: predtopic
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 33%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: predtopic
+    spec:
+      containers:
+      - name: predtopic
+        image: mckbrchill/complaints-pred-service:0.1.0
+        ports:
+        - containerPort: 80
+        # startupProbe:
+        #   httpGet:
+        #     path: /api/v1/startup
+        #     port: 80
+        readinessProbe:
+          httpGet:
+            path: /api/ready
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 2
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 30
+          failureThreshold: 2
+          periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: predtopic-env-config
