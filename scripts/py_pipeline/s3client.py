@@ -88,7 +88,6 @@ class s3Loader:
     
     def save_model_to_s3(self, model, bucket_name, model_name):
         """Uploads ml model to an S3 bucket."""
-        # Serialize the model using joblib
         filepath = './local_model.pkl'
         joblib.dump(model, filepath)
 
@@ -102,21 +101,16 @@ class s3Loader:
     def load_model_from_s3(self, bucket_name, model_name):
         """Downloads ml model from an S3 bucket and loads it."""
         key = "models/" + model_name
-        # Create a temporary file to store the downloaded model
+
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_filepath = temp_file.name
-            # Get the model object from S3
             response = self.s3.get_object(Bucket=bucket_name, Key=key)
             model_data = response['Body'].read()
 
-            # Write the model data to the temporary file
             with open(temp_filepath, 'wb') as temp_model_file:
                 temp_model_file.write(model_data)
 
-        # Load the model using joblib
         model = joblib.load(temp_filepath)
-
-        # Clean up the temporary file
         os.remove(temp_filepath)
         
         return model
@@ -130,5 +124,5 @@ class s3Loader:
     def save_df_to_parquet_s3(self, df, bucket_name, file_name):
         parquet_buffer = BytesIO()
         df.to_parquet(parquet_buffer, engine='pyarrow')
-        parquet_buffer.seek(0)  # Reset buffer position to the beginning
+        parquet_buffer.seek(0)
         self.s3.put_object(Bucket=bucket_name, Key=file_name, Body=parquet_buffer.getvalue())

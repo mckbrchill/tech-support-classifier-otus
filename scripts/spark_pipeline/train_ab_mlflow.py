@@ -141,11 +141,9 @@ if __name__ == "__main__":
         run_id = mlflow.active_run().info.run_id
         ab_test(test_df, lr_model, run_id, client, experiment_id)
         
-        # Save models to MLflow and S3
         mlflow.spark.save_model(lr_model, "models_local/lr_model")
         mlflow.spark.save_model(tfidf_model, "models_local/tfidf_model")
 
-        # Save models
         models_to_save = [(tfidf_model, "tfidf"), (lr_model, "logistic_regression")]
         for model, name in models_to_save:
             save_model_to_s3(model, clean_bucket_name, name)

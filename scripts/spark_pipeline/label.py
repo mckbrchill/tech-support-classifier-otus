@@ -18,11 +18,7 @@ def vectorize_text(df, count_vectorizer_model, tfidf_model):
     
     df = tokenizer.transform(df)
     df = remover.transform(df)
-    
-    # Transform the text data into TF vectors
     df = count_vectorizer_model.transform(df)
-    
-    # Transform the TF vectors into TF-IDF vectors
     df = tfidf_model.transform(df)
     
     return df
@@ -57,24 +53,16 @@ if __name__ == "__main__":
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
     object_key = 'preprocessed/complaints-2021-05-14_08_16_.parquet'
     
-    # Load preprocessed data from S3
     df = spark.read.parquet(f"s3a://{clean_bucket_name}/{object_key}")
-    
-    # Replace NaNs with empty strings
     df = df.na.fill({'complaint_final': ""})
     
-    # Load the CountVectorizer, TF-IDF and LDA models from S3
     count_vectorizer_model = CountVectorizerModel.load(f"s3a://{clean_bucket_name}/models/tf_model")
     tfidf_model = IDFModel.load(f"s3a://{clean_bucket_name}/models/idf_model")
     lda_model = LocalLDAModel.load(f"s3a://{clean_bucket_name}/models/lda_model")
-    
-    # Vectorize text using the loaded TF-IDF model
+
     df = vectorize_text(df, count_vectorizer_model, tfidf_model)
-    
-    # Assign topics using the loaded LDA model
     df = assign_topics(df, lda_model, 'Topic')
     
-    # Save the results
     save_results_to_s3(df, clean_bucket_name, object_key)
     
     spark.stop()

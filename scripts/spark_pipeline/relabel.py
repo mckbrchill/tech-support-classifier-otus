@@ -64,21 +64,14 @@ if __name__ == "__main__":
     
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
     object_key = 'preprocessed/complaints-2021-05-14_08_16_.parquet'
-    
-    # Load preprocessed data from S3
+
     df = spark.read.parquet(f"s3a://{clean_bucket_name}/{object_key}")
-    
-    # Replace NaNs with empty strings
     df = df.na.fill({'complaint_final': ""})
-    
-    # Vectorize text
     df, tf_model, idf_model = vectorize_text(df, 'complaint_final', 'features')
-    
-    # Extract topics
+
     num_topics = 5
     lda_model, topic_words = extract_topics(df, 'features', num_topics)
-    
-    # Assign topics
+
     df = assign_topics(df, lda_model, 'features', 'Topic')
     
     models_to_save = [(tf_model, "tf"), (idf_model, "idf"), (lda_model, "lda")]

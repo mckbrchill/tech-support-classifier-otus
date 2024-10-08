@@ -17,16 +17,14 @@ import sys
 os.environ['PYSPARK_PYTHON'] = sys.executable
 os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 
-# Load necessary NLTK data
 nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('punkt_tab')
 os.system('python -m textblob.download_corpora')
 
-# Load environment variables
 load_dotenv()
 
-# Define UDFs
+
 def clean_text(text):
     """Clean input text by removing punctuation and numeric words."""
     text = text.lower()
@@ -46,8 +44,6 @@ def get_pos_tags(text):
 
 def preprocess_complaints(df):
     """Preprocess the complaints data using Spark UDFs."""
-
-    # Select and alias nested fields within _score
     df = df.select(
         col('_id').alias('id'),
         col('_index').alias('index'),
@@ -112,29 +108,22 @@ if __name__ == "__main__":
         .set("spark.sql.parquet.int96RebaseModeInWrite", "CORRECTED")
     )
 
-    # Initialize Spark session
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
 
     nlp = spacy.load("en_core_web_sm")
 
-    # S3 bucket details
     raw_bucket_name = os.environ.get("S3_RAW_BUCKET_NAME")
     clean_bucket_name = os.environ.get("S3_CLEAN_BUCKET_NAME")
 
-    # Load data from S3
     s3_filepath = f"s3a://{raw_bucket_name}/{object_key}"
     df = spark.read.json(s3_filepath)
 
-    # Preprocess data
     preprocessed_df = preprocess_complaints(df)
 
-    # Define output path
     p, _ = os.path.splitext(object_key)
     new_object_key = f"preprocessed/{p}.parquet"
     output_path = f"s3a://{clean_bucket_name}/{new_object_key}"
 
-    # Write preprocessed data back to S3
     preprocessed_df.coalesce(1).write.parquet(output_path, mode="overwrite")
-
-    # Stop Spark session
+    
     spark.stop()
