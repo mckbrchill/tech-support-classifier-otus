@@ -26,6 +26,7 @@ class InferenceModel:
             .setMaster(config.master)
             .setAppName("TextClassificationInference")
             .set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+            .set('spark.jars.packages', 'org.apache.hadoop:hadoop-aws:3.3.4')
             .set("spark.hadoop.fs.s3a.access.key", config.aws_access_key_id)
             .set("spark.hadoop.fs.s3a.secret.key", config.aws_secret_access_key)
             .set("spark.hadoop.fs.s3a.endpoint", config.aws_endpoint_url)
