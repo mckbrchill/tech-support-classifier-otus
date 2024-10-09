@@ -18,8 +18,8 @@ COPY pyproject.toml /app/
 RUN poetry install --only main --no-interaction
 
 # Download JAR files
-RUN mkdir -p /opt/spark/jars
-COPY /spark_jars/ /opt/spark/jars/
+# RUN mkdir -p /opt/spark/jars
+# COPY /spark_jars/ /opt/spark/jars/
 
 COPY /src/ /app/
 
