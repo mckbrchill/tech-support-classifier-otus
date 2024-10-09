@@ -29,7 +29,6 @@ jobs:
         file: Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_TAG }}
-
     - name: Log out from Docker Hub
       run: docker logout
 
