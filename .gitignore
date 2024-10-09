@@ -13,3 +13,5 @@ src/__pycache__/
 spark_jars
 
 scripts/Untitled.ipynb
+notebooks/count_vector.pk1
+notebooks/tfidf.pk1
